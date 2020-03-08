@@ -20,24 +20,21 @@ jobs:
       run: |
         touch .env
         sed -i '2,7d' build.sh
-        echo "----------"
-        cat build.sh
 
     - name: Login_repo
       run: |
         hostname
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} 
 
-    # - name: Build_app
-    #   run: |
-    #     echo ">>> Siglus share lib 方法 <<<"
-    #     docker-compose run --entrypoint /dev-ui/build.sh requisition-ui
+    - name: Build_app_image
+      run: |
+        echo ">>> openlims 方法 <<<"
+        docker-compose -f docker-compose.builder.yml run builder
+        docker-compose -f docker-compose.builder.yml build image
 
-    # - name: Build_image
-    #   env:
-    #     BUILD_NUMBER: ${{ github.run_number }}
-    #   run: |
-    #     echo 
-    #     docker-compose build image
-    #     docker tag openlmis/requisition-ui:latest cicddraft/requisition-ui:test-$BUILD_NUMBER
-    #     docker push cicddraft/requisition-ui:test-$BUILD_NUMBER
+    - name: Push_image
+      env:
+        BUILD_NUMBER: ${{ github.run_number }}
+      run: |
+        docker tag openlmis/stockmanagement:latest cicddraft/stockmanagement:test-$BUILD_NUMBER
+        docker push  cicddraft/stockmanagement:test-$BUILD_NUMBER
