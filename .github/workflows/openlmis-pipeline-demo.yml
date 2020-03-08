@@ -1,0 +1,46 @@
+name: stockmanagent-p
+
+on: 
+  push:
+    branches: 
+      - master
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout_code
+      uses: actions/checkout@v1
+
+    - name: Preparation
+      env:
+        NUMBER: ${{ github.run_number }}
+      run: |
+        touch .env
+        cat > build.sh <<EOF
+#!/bin/sh
+
+# Run Gradle build
+gradle clean build
+EOF
+
+    - name: Login_repo
+      run: |
+        hostname
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} 
+
+    # - name: Build_app
+    #   run: |
+    #     echo ">>> Siglus share lib 方法 <<<"
+    #     docker-compose run --entrypoint /dev-ui/build.sh requisition-ui
+
+    # - name: Build_image
+    #   env:
+    #     BUILD_NUMBER: ${{ github.run_number }}
+    #   run: |
+    #     echo 
+    #     docker-compose build image
+    #     docker tag openlmis/requisition-ui:latest cicddraft/requisition-ui:test-$BUILD_NUMBER
+    #     docker push cicddraft/requisition-ui:test-$BUILD_NUMBER
