@@ -19,7 +19,7 @@ jobs:
         NUMBER: ${{ github.run_number }}
       run: |
         touch .env
-        sed -i '2,5d' build.sh
+        sed -i '2,7d' build.sh
         echo "----------"
         cat build.sh
 
