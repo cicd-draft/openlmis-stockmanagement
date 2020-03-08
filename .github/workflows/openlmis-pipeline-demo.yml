@@ -19,12 +19,9 @@ jobs:
         NUMBER: ${{ github.run_number }}
       run: |
         touch .env
-        cat > build.sh <<EOF
-#!/bin/sh
-
-# Run Gradle build
-gradle clean build
-EOF
+        sed -i '2,5d' build.sh
+        echo "----------"
+        cat build.sh
 
     - name: Login_repo
       run: |
